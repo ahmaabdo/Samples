@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?><!--This layout specifies what the app looks like.
+It included a Spinner with dialog mode, a Button, & a TextView.-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="ahmaabdo.coffeeadviser.FindCoffeeActivity">
+
+    <!--A spinner with the coffee types to choose with the dialog mode-->
+    <Spinner
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:layout_marginTop="40dp"
+        android:entries="@array/coffee_items"
+        android:gravity="center"
+        android:spinnerMode="dialog" />
+
+    <!--Find coffee button will passes value from the spinner with the type of coffee-->
+    <Button
+        android:id="@+id/find_coffee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:onClick="onClickFindCoffee"
+        android:text="@string/find_coffee"
+        android:textAllCaps="false" />
+
+    <!--Will comes up with a list of coffee suggestions-->
+    <TextView
+        android:id="@+id/brands_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        android:text="@string/no_coffees_selected" />
+
+</LinearLayout>
