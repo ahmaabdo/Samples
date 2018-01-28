@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Coffee Adviser</string>
+    <string name="action_settings">Settings</string>
+    <string name="find_coffee">Find Coffee</string>
+    <string name="no_coffees_selected">No coffees selected</string>
+
+    <!--Coffee items to choose from the spinner dialog-->
+    <string-array name="coffee_items">
+        <item>Nescafe</item>
+        <item>Nescafe Gold</item>
+        <item>Nescafe Black</item>
+        <item>Arabic Coffee</item>
+        <item>Cappuccino</item>
+        <item>Cappuccino Vanilla</item>
+        <item>Cappuccino Express</item>
+    </string-array>
+</resources>

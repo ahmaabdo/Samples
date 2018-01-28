@@ -11,7 +11,7 @@ public class CoffeeExpert {
 
     List<String> getBrands(String name) {
         List<String> brands = new ArrayList<>();
-        if (name.equals("Nescafe")) {
+        if (brands.equals("Nescafe")) {
             brands.add("CoffeeMix");
             brands.add("Nescafe Gold");
         } else {
