@@ -9,8 +9,22 @@ public class Workout {
 
     //workouts is an array of four Workouts.
     public static final Workout[] workouts = {
+            new Workout("Cur quadra volare? ",
+                    "Contencio de\n brevis rumor,\n locus abactor! "),
+            new Workout("Nunquam visum fluctus. ",
+                    "Axonas sunt\n fraticinidas de\n noster zirbus. "),
+            new Workout("Cur assimilatio tolerare? ",
+                    "Sunt galluses\n perdere nobilis,\n castus vitaes. "),
+            new Workout("Cur armarium cadunt? ",
+                    "Classis de\n velox abnoba,\n carpseris ausus! "),
+            new Workout("Nunquam promissio deus. ",
+                    "Camerarius lacta\n sed mire convertams\n rumor est. "),
+            new Workout("Cur era favere? ",
+                    "Sunt bromiumes\n demitto ferox,\n brevis nixes. "),
+            new Workout("Nunquam attrahendam lacta. ",
+                    "Emeritis classis\n nunquam attrahendams\n domina est. "),
             new Workout("The Limb Loosener",
-                    "5 Handstand push-ups\n10 1-legged squats\n15 Pull-ups"),
+                    "Clemens hibrida\n tandem experientias\n ionicis tormento est. "),
             new Workout("Core Agony",
                     "100 Pull-ups\n100 Push-ups\n100 Sit-ups\n100 Squats"),
             new Workout("The Wimp Special",
