@@ -2,7 +2,9 @@ package ahmaabdo.workout;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +22,28 @@ public class WorkoutDetailFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //Only add the fragment if the activity isn't begin recreated after having been destroyed
+        if (savedInstanceState == null) {
+            StopwatchFragment stopwatch = new StopwatchFragment();
+            //Begin the fragment transaction
+            getChildFragmentManager().beginTransaction()
+                    //Add the stopwatch.
+                    .add(R.id.stopwatch_container, stopwatch)
+                    //Add to the back stack
+                    .addToBackStack(null)
+                    //Set the fragment transition to fade in and out
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    //commit the transaction
+                    .commit();
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        //Store the current id at bundle to restore it on activity recreate
         outState.putLong("workoutId", workoutId);
     }
 
@@ -54,4 +76,6 @@ public class WorkoutDetailFragment extends Fragment {
         }
         return inflater.inflate(R.layout.fragment_workout_detail, container, false);
     }
+
+
 }
