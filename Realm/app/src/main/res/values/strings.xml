@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Realm</string>
+    <string name="title">Title</string>
+    <string name="note">Note</string>
+    <string name="save">SAVE</string>
+    <string name="delete">Delete</string>
+</resources>
