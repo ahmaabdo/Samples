@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--If you observe the gmail app, when you long press and
+        selects a row, the thumbnail icon will be animated in
+        a flip motion showing other side of the icon. We can
+        do the same using the ObjectAnimator concepts. -->
+    <integer name="card_flip_time_full">500</integer>
+    <integer name="card_flip_time_half">200</integer>
+</resources>
