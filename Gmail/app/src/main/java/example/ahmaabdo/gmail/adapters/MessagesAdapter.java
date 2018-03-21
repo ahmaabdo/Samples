@@ -2,6 +2,7 @@ package example.ahmaabdo.gmail.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -50,9 +51,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         public TextView from, subject, message, iconText, timestamp;
         public ImageView iconImp, imgProfile;
         public LinearLayout messageContainer;
-        public RelativeLayout iconContainer, iconBack, iconFront;
+        public RelativeLayout iconContainer, iconBack, iconFront, viewBackground, viewForeground;
 
-        public MyViewHolder(View view) {
+        public MyViewHolder(@NonNull View view) {
             super(view);
             from = view.findViewById(R.id.from);
             subject = view.findViewById(R.id.txt_primary);
@@ -66,16 +67,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
             messageContainer = view.findViewById(R.id.message_container);
             iconContainer = view.findViewById(R.id.icon_container);
             view.setOnLongClickListener(this);
+            viewBackground = view.findViewById(R.id.view_background);
+            viewForeground = view.findViewById(R.id.view_foreground);
         }
 
         @Override
-        public boolean onLongClick(View view) {
+        public boolean onLongClick(@NonNull View view) {
             listener.onRowLongClicked(getAdapterPosition());
             view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             return true;
         }
     }
-
 
     public MessagesAdapter(Context mContext, List<Message> messages, MessageAdapterListener listener) {
         this.mContext = mContext;
@@ -85,8 +87,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         animationItemsIndex = new SparseBooleanArray();
     }
 
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.message_list_row, parent, false);
 
@@ -94,7 +97,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         Message message = messages.get(position);
 
         // displaying text view data
@@ -125,7 +128,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         applyClickEvents(holder, position);
     }
 
-    private void applyClickEvents(MyViewHolder holder, final int position) {
+    private void applyClickEvents(@NonNull MyViewHolder holder, final int position) {
         holder.iconContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,7 +152,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 
         holder.messageContainer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public boolean onLongClick(@NonNull View view) {
                 listener.onRowLongClicked(position);
                 view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 return true;
@@ -157,7 +160,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         });
     }
 
-    private void applyProfilePicture(MyViewHolder holder, Message message) {
+    private void applyProfilePicture(@NonNull MyViewHolder holder, @NonNull Message message) {
         if (!TextUtils.isEmpty(message.getPicture())) {
             Glide.with(mContext)
                     .load(message.getPicture())
@@ -175,7 +178,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         }
     }
 
-    private void applyIconAnimation(MyViewHolder holder, int position) {
+    private void applyIconAnimation(@NonNull MyViewHolder holder, int position) {
         if (selectedItems.get(position, false)) {
             holder.iconFront.setVisibility(View.GONE);
             resetIconYAxis(holder.iconBack);
@@ -197,10 +200,18 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         }
     }
 
+    public void removeItem(int position) {
+        messages.remove(position);
+        //resetCurrentIndex();
+        // notify the item removed by position
+        // to perform recycler view delete animations
+        // NOTE: don't call notifyDataSetChanged()
+        notifyItemRemoved(position);
+    }
 
     // As the views will be reused, sometimes the icon appears as
     // flipped because older view is reused. Reset the Y-axis to 0
-    private void resetIconYAxis(View view) {
+    private void resetIconYAxis(@NonNull View view) {
         if (view.getRotationY() != 0) {
             view.setRotationY(0);
         }
@@ -216,7 +227,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         return messages.get(position).getId();
     }
 
-    private void applyImportant(MyViewHolder holder, Message message) {
+    private void applyImportant(@NonNull MyViewHolder holder, @NonNull Message message) {
         if (message.isImportant()) {
             holder.iconImp.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_star_black_24dp));
             holder.iconImp.setColorFilter(ContextCompat.getColor(mContext, R.color.icon_tint_selected));
@@ -226,7 +237,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         }
     }
 
-    private void applyReadStatus(MyViewHolder holder, Message message) {
+    private void applyReadStatus(@NonNull MyViewHolder holder, @NonNull Message message) {
         if (message.isRead()) {
             holder.from.setTypeface(null, Typeface.NORMAL);
             holder.subject.setTypeface(null, Typeface.NORMAL);
@@ -267,6 +278,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         return selectedItems.size();
     }
 
+    @NonNull
     public List<Integer> getSelectedItems() {
         List<Integer> items =
                 new ArrayList<>(selectedItems.size());

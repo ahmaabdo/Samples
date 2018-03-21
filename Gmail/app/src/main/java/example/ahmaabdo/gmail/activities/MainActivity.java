@@ -10,9 +10,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +27,7 @@ import example.ahmaabdo.gmail.R;
 import example.ahmaabdo.gmail.adapters.MessagesAdapter;
 import example.ahmaabdo.gmail.api.ApiClient;
 import example.ahmaabdo.gmail.api.ApiInterface;
-import example.ahmaabdo.gmail.helper.DividerItemDecoration;
+import example.ahmaabdo.gmail.helper.RecyclerItemTouchHelper;
 import example.ahmaabdo.gmail.models.Message;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,9 +36,13 @@ import retrofit2.Response;
 /**
  * Created by Ahmad on Mar 21, 2018.
  * https://www.androidhive.info/2017/02/android-creating-gmail-like-inbox-using-recyclerview/
+ * https://www.androidhive.info/2017/09/android-recyclerview-swipe-delete-undo-using-itemtouchhelper/
  */
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, MessagesAdapter.MessageAdapterListener {
+public class MainActivity extends AppCompatActivity
+        implements SwipeRefreshLayout.OnRefreshListener,
+        MessagesAdapter.MessageAdapterListener,
+        RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     private List<Message> messages = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -49,10 +55,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab =  findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,16 +67,24 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
         });
 
-        recyclerView =  findViewById(R.id.recycler_view);
-        swipeRefreshLayout =   findViewById(R.id.swipe_refresh_layout);
+        recyclerView = findViewById(R.id.recycler_view);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
 
         mAdapter = new MessagesAdapter(this, messages, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
+
+        // adding item touch helper
+        // only ItemTouchHelper.LEFT added to detect Right to Left swipe
+        // if you want both Right -> Left and Left -> Right
+        // add pass ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT as param
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
+                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         actionModeCallback = new ActionModeCallback();
 
@@ -227,6 +241,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         }
     }
 
+    /**
+     * Will be called when the swipe is performed.
+     * Here the important step of deleting the row item is taken place.
+     * mAdapter.removeItem() is called to delete the row from the RecyclerView.
+     *
+     * @param viewHolder The ViewHolder which has been swiped by the user.
+     * @param direction  The direction to which the ViewHolder is swiped.
+     * @param position   The position of item
+     */
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if (viewHolder instanceof MessagesAdapter.MyViewHolder) {
+            // Remove the item from recycler view
+            mAdapter.removeItem(viewHolder.getAdapterPosition());
+        }
+    }
 
     private class ActionModeCallback implements ActionMode.Callback {
         @Override
